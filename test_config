@@ -9,7 +9,7 @@
 ; WARNING: This will log password to stdout!
 ; Possible values: 0 for disable or 1 for enable
 ; Default value: 0
-debug					= 1
+debug					= 0
 ;0
 ; When an empty password is provided by the user, do not validate it.
 ; Without this option, the empty password will be privided to PAM, and,
