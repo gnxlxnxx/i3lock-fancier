@@ -87,7 +87,8 @@ extern xcb_screen_t *screen;
 static struct ev_periodic *time_redraw_tick;
 
 /* Caps lock state string showing when caps lock is active */
-char CAPS_LOCK_STRING[] = "CAPS";
+char CAPS_LOCK_STRING[] = "CAPS LOCK";
+char NUM_LOCK_STRING[]  = "MOD4 LOCK";
 
 /* Cache the screen’s visual, necessary for creating a Cairo context. */
 static xcb_visualtype_t *vistype;
@@ -437,7 +438,7 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
 	int ind_x = INDICATORS_WIDTH / 2;
 	int ind_y = INDICATORS_HEIGHT / 2;
 
-	if (show_keyboard_layout || show_caps_lock_state) {
+	if (show_keyboard_layout || show_caps_lock_state || show_num_lock_state) {
 		cairo_set_source_rgba_long(ind_ctx, indicator16);
 
 		cairo_select_font_face(ind_ctx,
@@ -458,6 +459,12 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
 		/* Get Caps Lock indicator boundaries */
 		cairo_text_extents_t caps_extents;
 		cairo_text_extents(ind_ctx, CAPS_LOCK_STRING, &caps_extents);
+
+		/* Get Num Lock indicator boundaries */
+		cairo_text_extents_t num_extents;
+		cairo_text_extents(ind_ctx, NUM_LOCK_STRING, &num_extents);
+
+
 
 		// Keyboard layout
 		if (show_keyboard_layout) {
@@ -493,11 +500,35 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
 			XGetKeyboardControl(_display, &xKeyboardState);
 			/* if caps lock is switched on */
 			if (xKeyboardState.led_mask % 2 == 1) {
+				printf("caps-lock was switched on");
 				cairo_move_to(ind_ctx, caps_lock_state_x, caps_lock_state_y);
 				cairo_show_text(ind_ctx, CAPS_LOCK_STRING);
 				cairo_close_path(ind_ctx);
 			}
 		}
+		/* NUM/MOD4 Lock state */
+		if (show_num_lock_state) {
+			double num_lock_state_x
+				= ind_x
+				- num_extents.width / 2
+				- num_extents.x_bearing;
+
+			double num_lock_state_y
+				= ind_y
+				- num_extents.height / 2
+				- num_extents.y_bearing
+				+ 3.0 * num_extents.height;
+
+			XGetKeyboardControl(_display, &xKeyboardState);
+			/* if num/mod4 lock is switched on */
+			if (xKeyboardState.led_mask & 2) {
+				printf("mod4-lock was switched on");
+				cairo_move_to(ind_ctx, num_lock_state_x, num_lock_state_y);
+				cairo_show_text(ind_ctx, NUM_LOCK_STRING);
+				cairo_close_path(ind_ctx);
+			}
+		}
+
 
 	}
 

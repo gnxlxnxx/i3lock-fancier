@@ -54,6 +54,7 @@ int unlock_indicator 		= 1;
 int always_show_indicator 	= 0;
 
 int show_caps_lock_state 	= 1;
+int show_num_lock_state	= 1;
 int show_keyboard_layout 	= 1;
 
 int tile 			= 0;
@@ -324,6 +325,7 @@ int read_config(char * file)
 	/* parse [keyboard] section */
 	ini_sget(config, "keyboard", "show_key_layout", "%d", &show_keyboard_layout);
 	ini_sget(config, "keyboard", "show_caps_state", "%d", &show_caps_lock_state);
+	ini_sget(config, "keyboard", "show_num_state", "%d", &show_num_lock_state);
 
 	if ((arg = ini_get(config, "keyboard", "font")) != NULL)
 		strcpy(keyl_font, arg);

@@ -51,6 +51,8 @@ extern int show_failed_attempts;
 
 /* Allows user to select whether he wants see caps lock state */
 extern int show_caps_lock_state;
+
+extern int show_num_lock_state;
 /* Allows user to select whether he wants see current keyboard layout */
 extern int show_keyboard_layout;
 
